@@ -7,8 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_IMAGE REQUIRED SDL2_image>=2.0.0)
 
-add_executable(Platformer_Game_SDL main.cpp
-    game.h game.cpp)
+add_executable(Platformer_Game_SDL
+    main.cpp
+    game.h game.cpp
+    ECS.h
+)
 
 include(GNUInstallDirs)
 install(TARGETS Platformer_Game_SDL

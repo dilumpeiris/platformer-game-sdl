@@ -1,4 +1,5 @@
 #include "game.h"
+#include "ECS.h"
 #include <iostream>
 
 void Game::init(const char *title, int width, int height) {
@@ -17,7 +18,7 @@ void Game::init(const char *title, int width, int height) {
     isRunning = true;
 }
 
-void Game::update() { std::cout << "hello" << std::endl; }
+
 
 void Game::handleEvents() {
     if (SDL_PollEvent(&event)) {
@@ -30,4 +31,5 @@ void Game::handleEvents() {
         }
     }
 }
+void Game::update() {}
 void Game::draw() {}
