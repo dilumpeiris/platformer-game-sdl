@@ -6,17 +6,17 @@
 
 class Manager;
 class Entity;
-class Component;
 class System;
-
-constexpr std::size_t maxComponents = 32;
-constexpr std::size_t maxSystems = 32;
+class Component;
 
 using componentID = std::size_t;
 using systemID = std::size_t;
 
-using componentsBitSet = std::bitset<maxComponents>;
-using systemsBitSet = std::bitset<maxSystems>;
+constexpr std::size_t maxComponents = 32;
+constexpr std::size_t maxSystems = 32;
+
+using componentBitSet = std::bitset<maxComponents>;
+using systemBitSet = std::bitset<maxSystems>;
 
 using componentArray = std::array<Component *, maxComponents>;
 using systemArray = std::array<System *, maxSystems>;
@@ -50,11 +50,10 @@ public:
     virtual void draw(){};
 };
 
-class system{
+class System {
 public:
     virtual void init(){};
     virtual void update(){};
-
 };
 
 class Entity {
@@ -62,7 +61,8 @@ public:
     Manager *manager;
 
     std::vector<std::unique_ptr<Component>> components;
-    componentsBitSet componentBitSet;
+    componentArray componentArray;
+    componentBitSet componentBitSet;
 
     void init() {
         for (auto &c : components) {
@@ -79,9 +79,27 @@ public:
             c->draw();
         }
     };
+    template <typename T, typename... TArgs>
+    T& addComponent(TArgs&& ...mArgs){
+        T* c(new T(std::forward<TArgs>(mArgs)...));
+        c->entity = this;
+        std::unique_ptr<T> uPtr{c};
+        components.emplace_back(c);
+        componentArray[getComponentID<T>()] = c;
+        componentBitSet[getComponentID<T>()] = true;
+        return *c;
+    }
+    template<typename T>
+    T& getComponent(){
+        return static_cast<T*>(componentArray[getComponentID<T>()]);
+    }
+    template<typename T>
+    bool hasComponent(){
+        return componentBitSet[getComponentID<T>()];
+    }
 };
 
-class Manager{
+class Manager {
     std::vector<std::unique_ptr<Entity>> entities;
 
     void init() {
@@ -99,11 +117,10 @@ class Manager{
             e->draw();
         }
     };
+    Entity &addEntity(Entity &e) {
 
-    Entity &addEntity(Entity & e){
         // entities.emplace_back(e);
 
         return e;
-    }
-
+  }
 };
