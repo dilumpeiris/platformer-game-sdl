@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <array>
 #include <bitset>
 #include <memory.h>
@@ -21,42 +22,54 @@ using systemBitSet = std::bitset<maxSystems>;
 using componentArray = std::array<Component *, maxComponents>;
 using systemArray = std::array<System *, maxSystems>;
 
-inline componentID getComponentID() {
+inline componentID getComponentID() noexcept
+{
     static componentID lastID = 0;
     return lastID++;
 }
 
-inline systemID getSystemID() {
+inline systemID getSystemID() noexcept
+{
     static systemID lastID = 0;
     return lastID++;
 }
 
-template <typename T> inline componentID getComponentID() {
+template<typename T>
+inline componentID getComponentID() noexcept
+{
     static componentID componentID = getComponentID();
     return componentID;
 }
 
-template <typename T> inline systemID getSystemID() {
+template<typename T>
+inline systemID getSystemID() noexcept
+{
     static systemID systemID = getSystemID();
     return systemID;
 }
 
-class Component {
+class Component
+{
 public:
     Entity *entity;
 
     virtual void init(){};
     virtual void update(){};
     virtual void draw(){};
+    virtual ~Component() {}
 };
 
-class System {
+class System
+{
 public:
+    Manager *manager;
+
     virtual void init(){};
     virtual void update(){};
 };
 
-class Entity {
+class Entity
+{
 public:
     Manager *manager;
 
@@ -64,63 +77,95 @@ public:
     componentArray componentArray;
     componentBitSet componentBitSet;
 
-    void init() {
+    void init()
+    {
         for (auto &c : components) {
             c->init();
         }
     };
-    void update() {
+    void update()
+    {
         for (auto &c : components) {
             c->update();
         }
     };
-    void draw() {
+    void draw()
+    {
         for (auto &c : components) {
             c->draw();
         }
     };
-    template <typename T, typename... TArgs>
-    T& addComponent(TArgs&& ...mArgs){
-        T* c(new T(std::forward<TArgs>(mArgs)...));
+
+    template<typename T, typename... TArgs>
+    T &addComponent(TArgs &&...mArgs)
+    {
+        T *c = new T(std::forward<TArgs>(mArgs)...);
         c->entity = this;
         std::unique_ptr<T> uPtr{c};
-        components.emplace_back(c);
+        components.emplace_back(std::move(uPtr));
         componentArray[getComponentID<T>()] = c;
         componentBitSet[getComponentID<T>()] = true;
         return *c;
     }
+
     template<typename T>
-    T& getComponent(){
-        return static_cast<T*>(componentArray[getComponentID<T>()]);
+    T *getComponent()
+    {
+        return static_cast<T *>(componentArray[getComponentID<T>()]);
     }
     template<typename T>
-    bool hasComponent(){
+    bool hasComponent()
+    {
         return componentBitSet[getComponentID<T>()];
     }
 };
 
-class Manager {
+class Manager
+{
+public:
     std::vector<std::unique_ptr<Entity>> entities;
+    std::vector<std::unique_ptr<System>> systems;
 
-    void init() {
+    systemArray systemArray;
+    systemBitSet systemBitSet;
+
+    void init()
+    {
         for (auto &e : entities) {
             e->init();
         }
-    };
-    void update() {
+    }
+    void update()
+    {
         for (auto &e : entities) {
             e->update();
         }
-    };
-    void draw() {
+        for (auto &s : systems) {
+            s->update();
+        }
+    }
+    void draw()
+    {
         for (auto &e : entities) {
             e->draw();
         }
-    };
-    Entity &addEntity(Entity &e) {
-
-        // entities.emplace_back(e);
-
+    }
+    Entity *addEntity()
+    {
+        Entity *e = new Entity();
+        std::unique_ptr<Entity> uPtr{e};
+        entities.emplace_back(std::move(uPtr));
         return e;
-  }
+    }
+    template<typename T, typename... TArgs>
+    T &addSystem(TArgs &&...mArgs)
+    {
+        T *s = new T(std::forward<TArgs>(mArgs)...);
+        s->manager = this;
+        std::unique_ptr<T> uPtr{s};
+        systems.emplace_back(std::move(uPtr));
+        systemArray[getComponentID<T>()] = s;
+        systemBitSet[getComponentID<T>()] = true;
+        return *s;
+    }
 };

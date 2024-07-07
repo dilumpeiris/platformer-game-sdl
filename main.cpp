@@ -1,7 +1,5 @@
 #include "game.h"
 
-
-
 Game *game = nullptr;
 
 int main(int argc, char *argv[])
@@ -20,7 +18,7 @@ int main(int argc, char *argv[])
 
         game->handleEvents();
         game->update();
-        // game->render();
+        game->draw();
 
         frameTime = SDL_GetTicks() - frameStart;
 
