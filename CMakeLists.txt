@@ -17,6 +17,10 @@ add_executable(platformer-game-sdl
     vector2d.h
     SpriteSystem.h
     PlayerMovementSystem.h
+    ColliderComponent.h
+    PhysicsComponent.h
+    PhysicsSystem.h
+    CollisionDetectionSystem.h
 )
 
 include(GNUInstallDirs)

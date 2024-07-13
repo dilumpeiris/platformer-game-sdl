@@ -1,6 +1,6 @@
 #pragma once
 #include "ECS.h"
-#include "TransformComponent.h"
+#include "PhysicsComponent.h"
 #include <SDL.h>
 
 class PlayerMovementSystem : public System
@@ -9,6 +9,7 @@ class PlayerMovementSystem : public System
 public:
     std::vector<Uint8> state;
     Vector2D velocity_dir;
+
     PlayerMovementSystem()
     {
         const Uint8 *const_state = SDL_GetKeyboardState(nullptr);
@@ -17,6 +18,7 @@ public:
             state[i] = const_state[i];
         }
     }
+
     void update() override
     {
         const Uint8 *new_state = SDL_GetKeyboardState(nullptr);
@@ -50,9 +52,9 @@ public:
         }
 
         for (auto &e : manager->entities) {
-            if (e->hasComponent<TransformComponent>()) {
-                TransformComponent *t = e->getComponent<TransformComponent>();
-                t->position += velocity_dir * 5;
+            if (e->hasComponent<PhysicsComponent>()) {
+                PhysicsComponent *p = e->getComponent<PhysicsComponent>();
+                p->velocity = velocity_dir * 2;
             }
         }
 

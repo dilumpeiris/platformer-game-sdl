@@ -1,4 +1,5 @@
 #include "game.h"
+#include "PhysicsSystem.h"
 #include "PlayerMovementSystem.h"
 #include "SpriteComponent.h"
 #include "SpriteSystem.h"
@@ -26,9 +27,11 @@ void Game::init(const char *title, int width, int height)
 
     Entity *player = manager->addEntity();
     player->addComponent<TransformComponent>(100, 100, 100);
+    player->addComponent<PhysicsComponent>();
     player->addComponent<SpriteComponent>(renderer, 100);
-    manager->addSystem<SpriteSystem>();
+    manager->addSystem<PhysicsSystem>();
     manager->addSystem<PlayerMovementSystem>();
+    manager->addSystem<SpriteSystem>();
 }
 
 void Game::handleEvents()
