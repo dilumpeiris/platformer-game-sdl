@@ -11,10 +11,11 @@ public:
 
 public:
     TransformComponent() = default;
-    TransformComponent(int x, int y, int scl)
+    TransformComponent(int x, int y, int scl_x, int scl_y)
     {
         position.x = x;
         position.y = y;
-        scale = scl;
+        scale.x = scl_x;
+        scale.y = scl_y;
     }
 };

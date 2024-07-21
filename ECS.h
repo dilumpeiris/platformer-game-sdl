@@ -73,9 +73,13 @@ class Entity
 public:
     Manager *manager;
 
+    int tag;
+
     std::vector<std::unique_ptr<Component>> components;
     componentArray componentArray;
     componentBitSet componentBitSet;
+
+    Entity(int entTag) { tag = entTag; }
 
     void init()
     {
@@ -150,9 +154,9 @@ public:
             e->draw();
         }
     }
-    Entity *addEntity()
+    Entity *addEntity(int entTag)
     {
-        Entity *e = new Entity();
+        Entity *e = new Entity(entTag);
         std::unique_ptr<Entity> uPtr{e};
         entities.emplace_back(std::move(uPtr));
         return e;

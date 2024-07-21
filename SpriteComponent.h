@@ -12,13 +12,13 @@ public:
 
 public:
     SpriteComponent() = default;
-    SpriteComponent(SDL_Renderer *renderer, int scl)
+    SpriteComponent(SDL_Renderer *renderer, const char *img, int scl_x, int scl_y)
     {
-        src = {0, 0, scl, scl};
-        dst = {0, 0, scl, scl};
+        src = {0, 0, scl_x, scl_y};
+        dst = {0, 0, scl_x, scl_y};
 
         this->renderer = renderer;
 
-        file = "dirt2.png";
+        file = img;
     }
 };

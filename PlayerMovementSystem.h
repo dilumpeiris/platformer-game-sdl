@@ -7,6 +7,14 @@ class PlayerMovementSystem : public System
 
 {
 public:
+    const int speed = 3;
+    float jumpForce = -25.0f;
+
+    bool isJumping = false;
+    bool isGrounded = false;
+
+    bool horizontalMovement = false;
+
     std::vector<Uint8> state;
     Vector2D velocity_dir;
 
@@ -21,40 +29,69 @@ public:
 
     void update() override
     {
+        for (auto &e : manager->entities) {
+            if (e->tag == 0) {
+                PhysicsComponent *p = e->getComponent<PhysicsComponent>();
+                handleMovement(p->velocity, isJumping, isGrounded, state);
+                handleJumping(p->velocity, isJumping, isGrounded);
+            }
+        }
+    }
+
+    void handleJumping(Vector2D &velocity, bool &isJumping, bool &isGrounded)
+    {
+        if (isJumping) {
+            velocity.y = jumpForce;
+            isJumping = false;
+        }
+    }
+    void handleMovement(Vector2D &velocity,
+                        bool &isJumping,
+                        bool &isGrounded,
+                        std::vector<Uint8> &state)
+    {
+        if (velocity.y == 0) {
+            isGrounded = true;
+        } else {
+            isGrounded = false;
+        }
         const Uint8 *new_state = SDL_GetKeyboardState(nullptr);
 
-        if (new_state[SDL_SCANCODE_W]) {
-            velocity_dir.y = -1;
-        }
-        if (state[SDL_SCANCODE_W] and !new_state[SDL_SCANCODE_W]) {
-            velocity_dir.y = 0;
-        }
         if (new_state[SDL_SCANCODE_A]) {
-            velocity_dir.x = -1;
+            velocity.x = -1 * speed;
             // transform->resolveCollisionX();
         }
         if (state[SDL_SCANCODE_A] and !new_state[SDL_SCANCODE_A]) {
-            velocity_dir.x = 0;
-        }
-        if (new_state[SDL_SCANCODE_S]) {
-            velocity_dir.y = 1;
-            // transform->resolveCollisionY();
-        }
-        if (state[SDL_SCANCODE_S] and !new_state[SDL_SCANCODE_S]) {
-            velocity_dir.y = 0;
-        }
-        if (new_state[SDL_SCANCODE_D]) {
-            velocity_dir.x = 1;
-            // transform->resolveCollisionX();
-        }
-        if (state[SDL_SCANCODE_D] and !new_state[SDL_SCANCODE_D]) {
-            velocity_dir.x = 0;
+            velocity.x = 0;
         }
 
-        for (auto &e : manager->entities) {
-            if (e->hasComponent<PhysicsComponent>()) {
-                PhysicsComponent *p = e->getComponent<PhysicsComponent>();
-                p->velocity = velocity_dir * 2;
+        if (new_state[SDL_SCANCODE_D]) {
+            velocity.x = 1 * speed;
+        }
+        if (state[SDL_SCANCODE_D] and !new_state[SDL_SCANCODE_D]) {
+            velocity.x = 0;
+        }
+
+        if (new_state[SDL_SCANCODE_SPACE] && isGrounded) {
+            isJumping = true;
+            isGrounded = false;
+        }
+        if (state[SDL_SCANCODE_SPACE] and new_state[SDL_SCANCODE_SPACE]) {
+            isJumping = false;
+        }
+
+        if (horizontalMovement) {
+            if (new_state[SDL_SCANCODE_W]) {
+                velocity.y = -1 * speed;
+            }
+            if (state[SDL_SCANCODE_W] and !new_state[SDL_SCANCODE_W]) {
+                velocity.y = 0;
+            }
+            if (new_state[SDL_SCANCODE_S]) {
+                velocity.y = 1 * speed;
+            }
+            if (state[SDL_SCANCODE_S] and !new_state[SDL_SCANCODE_S]) {
+                velocity.y = 0;
             }
         }
 

@@ -21,6 +21,8 @@ add_executable(platformer-game-sdl
     PhysicsComponent.h
     PhysicsSystem.h
     CollisionDetectionSystem.h
+    Collision.h
+    Gravity.h
 )
 
 include(GNUInstallDirs)

@@ -4,7 +4,6 @@
 #include "TransformComponent.h"
 #include "texturemanager.h"
 #include <SDL.h>
-#include <iostream>
 
 class SpriteSystem : public System
 {
@@ -16,7 +15,6 @@ class SpriteSystem : public System
                 TransformComponent *t = e->getComponent<TransformComponent>();
                 s->dst.x = t->position.x;
                 s->dst.y = t->position.y;
-
                 SDL_Texture *text = TextureManager::loadTexture(s->renderer, s->file);
                 TextureManager::draw(s->renderer, text, s->src, s->dst);
             }

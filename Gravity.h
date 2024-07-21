@@ -1,22 +1,19 @@
 #pragma once
 #include "ECS.h"
 #include "PhysicsComponent.h"
-#include "TransformComponent.h"
 #include <SDL.h>
 
-class PhysicsSystem : public System
+class Gravity : public System
 
 {
 public:
-    PhysicsSystem() {}
-
+    Gravity() {}
     void update() override
     {
         for (auto &e : manager->entities) {
             if (e->hasComponent<PhysicsComponent>()) {
-                TransformComponent *t = e->getComponent<TransformComponent>();
                 PhysicsComponent *p = e->getComponent<PhysicsComponent>();
-                t->position += p->velocity;
+                p->velocity.y += 1.1;
             }
         }
     }
