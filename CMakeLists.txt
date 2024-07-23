@@ -23,6 +23,8 @@ add_executable(platformer-game-sdl
     CollisionDetectionSystem.h
     Collision.h
     Gravity.h
+    AnimationComponent.h
+    AnimationSystem.h
 )
 
 include(GNUInstallDirs)

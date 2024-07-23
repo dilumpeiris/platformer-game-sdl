@@ -1,4 +1,7 @@
 #include "game.h"
+// #include "AnimationComponent.h"
+// #include "AnimationSystem.h"
+#include "AnimationSystem.h"
 #include "ColliderComponent.h"
 #include "CollisionDetectionSystem.h"
 #include "Gravity.h"
@@ -48,10 +51,20 @@ void Game::init(const char *title, int width, int height)
     box3->addComponent<ColliderComponent>();
 
     Entity *player = manager->addEntity(0);
-    player->addComponent<TransformComponent>(100, 100, 100, 100);
+    player->addComponent<TransformComponent>(100, 100, 64, 64);
     player->addComponent<PhysicsComponent>();
     player->addComponent<ColliderComponent>();
-    player->addComponent<SpriteComponent>(renderer, "player.png", 100, 100);
+    player->addComponent<SpriteComponent>(renderer, "player.png", 64, 64);
+
+    std::vector<std::string> r = {"idle-right-1.png", "idle-right-2.png"};
+    Animation a_r(r, 400.0);
+
+    std::vector<std::string> l = {"idle-left-1.png", "idle-left-2.png"};
+    Animation a_l(l, 400.0);
+    player->addComponent<AnimationComponent>();
+    player->getComponent<AnimationComponent>()->addAnimation("idle-right", a_r);
+    player->getComponent<AnimationComponent>()->addAnimation("idle-left", a_l);
+    player->getComponent<AnimationComponent>()->current_animation = "idle-right";
 
     for (int i = 0; i < 10; i++) {
         Entity *brick = manager->addEntity(1);
@@ -65,6 +78,7 @@ void Game::init(const char *title, int width, int height)
     manager->addSystem<CollisionDetectionSystem>();
     manager->addSystem<PhysicsSystem>();
     manager->addSystem<SpriteSystem>();
+    manager->addSystem<AnimationSystem>();
 }
 void Game::handleEvents()
 {

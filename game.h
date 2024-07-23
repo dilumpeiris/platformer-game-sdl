@@ -1,7 +1,8 @@
 #pragma once
 #include "ECS.h"
 #include "SDL.h"
-class Game {
+class Game
+{
 public:
     Manager *manager;
 

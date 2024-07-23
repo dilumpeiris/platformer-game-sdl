@@ -1,4 +1,5 @@
 #pragma once
+#include "AnimationComponent.h"
 #include "ECS.h"
 #include "PhysicsComponent.h"
 #include <SDL.h>
@@ -32,7 +33,8 @@ public:
         for (auto &e : manager->entities) {
             if (e->tag == 0) {
                 PhysicsComponent *p = e->getComponent<PhysicsComponent>();
-                handleMovement(p->velocity, isJumping, isGrounded, state);
+                AnimationComponent *a = e->getComponent<AnimationComponent>();
+                handleMovement(p->velocity, isJumping, isGrounded, state, a);
                 handleJumping(p->velocity, isJumping, isGrounded);
             }
         }
@@ -48,7 +50,8 @@ public:
     void handleMovement(Vector2D &velocity,
                         bool &isJumping,
                         bool &isGrounded,
-                        std::vector<Uint8> &state)
+                        std::vector<Uint8> &state,
+                        AnimationComponent *a)
     {
         if (velocity.y == 0) {
             isGrounded = true;
@@ -59,17 +62,23 @@ public:
 
         if (new_state[SDL_SCANCODE_A]) {
             velocity.x = -1 * speed;
+            a->current_animation = "idle-left";
+            // a->state = 1;
             // transform->resolveCollisionX();
         }
         if (state[SDL_SCANCODE_A] and !new_state[SDL_SCANCODE_A]) {
             velocity.x = 0;
+            a->current_animation = "idle-left";
         }
 
         if (new_state[SDL_SCANCODE_D]) {
+            // a->state = 0;
+            a->current_animation = "idle-right";
             velocity.x = 1 * speed;
         }
         if (state[SDL_SCANCODE_D] and !new_state[SDL_SCANCODE_D]) {
             velocity.x = 0;
+            a->current_animation = "idle-right";
         }
 
         if (new_state[SDL_SCANCODE_SPACE] && isGrounded) {

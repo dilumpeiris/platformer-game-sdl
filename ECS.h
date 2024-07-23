@@ -87,11 +87,10 @@ public:
             c->init();
         }
     };
-    void update()
-    {
-        for (auto &c : components) {
-            c->update();
-        }
+    void update(){
+        // for (auto &c : components) {
+        //     c->update();
+        // }
     };
     void draw()
     {

@@ -1,7 +1,6 @@
 #pragma once
 #include "vector2d.h"
 #include <SDL.h>
-#include <iostream>
 #include <utility>
 class Collision
 {
@@ -54,24 +53,16 @@ public:
 
         if (t_near.x > t_near.y) {
             if (rayDir.x < 0) {
-                // contact_normal = {1, 0};
-                contact_normal.x = 1;
-                contact_normal.y = 0;
+                contact_normal = {1, 0};
             } else {
-                // contact_normal = {1, 0};
-                contact_normal.x = -1;
-                contact_normal.y = 0;
+                contact_normal = {-1, 0};
             }
 
         } else if (t_near.x < t_near.y) {
             if (rayDir.y < 0) {
-                // contact_normal = {1, 0};
-                contact_normal.x = 0;
-                contact_normal.y = 1;
+                contact_normal = {0, 1};
             } else {
-                // contact_normal = {1, 0};
-                contact_normal.x = 0;
-                contact_normal.y = -1;
+                contact_normal = {0, -1};
             }
         }
         return true;
@@ -94,7 +85,6 @@ public:
 
         if (RayVSRect(origin, dest, rect, contact_point, contact_normal, t_near, t_far)
             && t_near < 1) {
-
             return true;
         }
 
