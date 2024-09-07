@@ -42,7 +42,6 @@ public:
                             rect.x = second_c->collider.x - c->collider.w / 2;
                             rect.y = second_c->collider.y - c->collider.h / 2;
                             const Vector2D velocity = p->velocity;
-
                             Vector2D contact_normal;
                             Vector2D contact_point;
                             float t_near;

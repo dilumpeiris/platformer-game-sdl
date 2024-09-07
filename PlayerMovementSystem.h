@@ -62,7 +62,7 @@ public:
 
         if (new_state[SDL_SCANCODE_A]) {
             velocity.x = -1 * speed;
-            a->current_animation = "idle-left";
+            a->current_animation = "walking-left";
             // a->state = 1;
             // transform->resolveCollisionX();
         }
@@ -73,12 +73,12 @@ public:
 
         if (new_state[SDL_SCANCODE_D]) {
             // a->state = 0;
-            a->current_animation = "idle-right";
+            a->current_animation = "walking-right";
             velocity.x = 1 * speed;
         }
         if (state[SDL_SCANCODE_D] and !new_state[SDL_SCANCODE_D]) {
             velocity.x = 0;
-            a->current_animation = "idle-right";
+            a->current_animation = "idle-left";
         }
 
         if (new_state[SDL_SCANCODE_SPACE] && isGrounded) {

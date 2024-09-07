@@ -2,7 +2,6 @@
 #include "ECS.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
-#include "texturemanager.h"
 #include <SDL.h>
 
 class SpriteSystem : public System

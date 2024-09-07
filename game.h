@@ -1,4 +1,5 @@
 #pragma once
+#include "AnimationComponent.h"
 #include "ECS.h"
 #include "SDL.h"
 class Game
@@ -18,4 +19,7 @@ public:
     void update();
     void draw();
     void handleEvents();
+    void loadEntities(Manager *manager);
+    void loadAnimations(Manager *manager);
+    Animation createAnimation(std::string name, int total, float speed);
 };

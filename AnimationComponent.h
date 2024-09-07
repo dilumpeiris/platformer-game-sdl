@@ -5,8 +5,9 @@
 
 struct Animation
 {
-    std::vector<std::string> frames;
     double frame_speed;
+    std::vector<std::string> frames;
+
     Animation()
         : frame_speed(0)
     {}
@@ -20,10 +21,11 @@ class AnimationComponent : public Component
 {
 public:
     std::map<std::string, Animation> animations;
-    std::string current_animation;
+
     int state = 0;
     int current_frame = 0;
     Uint32 lastFrameTime = 0;
+    std::string current_animation;
 
     AnimationComponent() {}
 

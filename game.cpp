@@ -9,28 +9,9 @@
 #include "PlayerMovementSystem.h"
 #include "SpriteComponent.h"
 #include "SpriteSystem.h"
-#include <iostream>
 
-void Game::init(const char *title, int width, int height)
+void Game::loadEntities(Manager *manager)
 {
-    int flags = 0;
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-        window = SDL_CreateWindow(title,
-                                  SDL_WINDOWPOS_CENTERED,
-                                  SDL_WINDOWPOS_CENTERED,
-                                  width,
-                                  height,
-                                  flags);
-        renderer = SDL_CreateRenderer(window, -1, 0
-                                      // SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-        );
-        if (renderer) {
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        }
-    }
-    isRunning = true;
-    manager = new Manager();
-
     Entity *sky = manager->addEntity(1);
     sky->addComponent<TransformComponent>(0, 0, 800, 600);
     sky->addComponent<SpriteComponent>(renderer, "sky.jpg", 800, 640);
@@ -56,22 +37,70 @@ void Game::init(const char *title, int width, int height)
     player->addComponent<ColliderComponent>();
     player->addComponent<SpriteComponent>(renderer, "player.png", 64, 64);
 
-    std::vector<std::string> r = {"idle-right-1.png", "idle-right-2.png"};
-    Animation a_r(r, 400.0);
-
-    std::vector<std::string> l = {"idle-left-1.png", "idle-left-2.png"};
-    Animation a_l(l, 400.0);
-    player->addComponent<AnimationComponent>();
-    player->getComponent<AnimationComponent>()->addAnimation("idle-right", a_r);
-    player->getComponent<AnimationComponent>()->addAnimation("idle-left", a_l);
-    player->getComponent<AnimationComponent>()->current_animation = "idle-right";
-
     for (int i = 0; i < 10; i++) {
         Entity *brick = manager->addEntity(1);
-        brick->addComponent<TransformComponent>(i * 64, height - 64, 64, 64);
+        brick->addComponent<TransformComponent>(i * 64, 640 - 64, 64, 64);
         brick->addComponent<SpriteComponent>(renderer, "bricks1.jpg", 64, 64);
         brick->addComponent<ColliderComponent>();
     }
+}
+
+Animation Game::createAnimation(std::string name, int total, float speed)
+{
+    std::vector<std::string> frames;
+    for (int i = 1; i <= total; ++i) {
+        frames.emplace_back(name + "-" + std::to_string(i) + ".png");
+    }
+    Animation animation(frames, speed);
+    return animation;
+}
+
+void Game::loadAnimations(Manager *manager)
+{
+    for (auto &e : manager->entities) {
+        switch (e->tag) {
+        case 0:
+            Animation walking_left = createAnimation("walking-left", 8, 50.0);
+            Animation walking_right = createAnimation("walking-right", 8, 50.0);
+            Animation idle_left = createAnimation("idle-left", 2, 300.0);
+
+            e->addComponent<AnimationComponent>();
+            e->getComponent<AnimationComponent>()->addAnimation("walking-left", walking_left);
+            e->getComponent<AnimationComponent>()->addAnimation("walking-right", walking_right);
+            e->getComponent<AnimationComponent>()->addAnimation("idle-left", idle_left);
+
+            e->getComponent<AnimationComponent>()->current_animation = "idle-left";
+
+            break;
+        }
+    }
+}
+
+void Game::init(const char *title, int width, int height)
+{
+    int flags = 0;
+
+    if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
+        window = SDL_CreateWindow(title,
+                                  SDL_WINDOWPOS_CENTERED,
+                                  SDL_WINDOWPOS_CENTERED,
+                                  width,
+                                  height,
+                                  flags);
+        renderer = SDL_CreateRenderer(window, -1, 0
+                                      // SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+        );
+        if (renderer) {
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        }
+    }
+
+    isRunning = true;
+
+    manager = new Manager();
+
+    loadEntities(manager);
+    loadAnimations(manager);
 
     manager->addSystem<PlayerMovementSystem>();
     manager->addSystem<Gravity>();
