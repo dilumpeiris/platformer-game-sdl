@@ -6,14 +6,17 @@
 struct Animation
 {
     double frame_speed;
-    std::vector<std::string> frames;
+    bool flipped = false;
+
+    std::vector<SDL_Rect> sources;
 
     Animation()
-        : frame_speed(0)
-    {}
-    Animation(std::vector<std::string> frames, int frame_speed)
-        : frames(frames)
+        : frame_speed(0){};
+
+    Animation(std::vector<SDL_Rect> sources, int frame_speed, bool flipped = false)
+        : sources(sources)
         , frame_speed(frame_speed)
+        , flipped(flipped)
     {}
 };
 
@@ -22,17 +25,20 @@ class AnimationComponent : public Component
 public:
     std::map<std::string, Animation> animations;
 
-    int state = 0;
-    int current_frame = 0;
-    Uint32 lastFrameTime = 0;
     std::string current_animation;
+    int current_frame = 0;
+
+    Uint32 lastFrameTime = 0;
 
     AnimationComponent() {}
+
+    bool isAnimationFlipped() { return animations[current_animation].flipped; }
 
     void addAnimation(const std::string &name, Animation animation)
     {
         animations[name] = animation;
     }
+
     void playAnimation(const std::string &name)
     {
         if (current_animation != name) {
@@ -41,14 +47,17 @@ public:
             lastFrameTime = 0;
         }
     }
-    std::string getCurrentFrame() { return animations[current_animation].frames[current_frame]; }
+    // Change the sources to frames later..
+    SDL_Rect getCurrentFrame() { return animations[current_animation].sources[current_frame]; }
+
     void update() override
     {
         if (animations.find(current_animation) != animations.end()) {
+            // Do we have to create two variables here?
             Uint32 current_time = SDL_GetTicks();
             Animation &anim = animations[current_animation];
             if (current_time - lastFrameTime >= anim.frame_speed) {
-                current_frame = (current_frame + 1) % anim.frames.size();
+                current_frame = (current_frame + 1) % anim.sources.size();
                 lastFrameTime = current_time;
             }
         }

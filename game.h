@@ -6,10 +6,12 @@ class Game
 {
 public:
     Manager *manager;
+    SDL_Texture *sprite_sheet;
 
     SDL_Window *window;
-    SDL_Renderer *renderer;
     SDL_Event event;
+    SDL_Renderer *renderer;
+
     Game() {}
 
     bool isRunning = true;
@@ -21,5 +23,7 @@ public:
     void handleEvents();
     void loadEntities(Manager *manager);
     void loadAnimations(Manager *manager);
-    Animation createAnimation(std::string name, int total, float speed);
+    void loadSpriteSheet(std::string filename);
+    Animation createAnimation(
+        std::string name, int start, int total, float speed, bool flipped = false, int scale = 64);
 };

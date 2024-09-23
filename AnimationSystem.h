@@ -16,9 +16,8 @@ public:
             if (e->hasComponent<AnimationComponent>()) {
                 AnimationComponent *a = e->getComponent<AnimationComponent>();
                 SpriteComponent *s = e->getComponent<SpriteComponent>();
-                s->file = a->getCurrentFrame().c_str();
-                TextureManager::clearTexture(s->text);
-                s->text = TextureManager::loadTexture(s->renderer, s->file);
+                s->flipped = a->isAnimationFlipped();
+                s->src = a->getCurrentFrame();
                 a->update();
             }
         }

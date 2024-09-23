@@ -10,10 +10,13 @@ SDL_Texture *TextureManager::loadTexture(SDL_Renderer *renderer, const char *fil
     return texture;
 }
 
-void TextureManager::draw(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect srcR, SDL_Rect dstR)
+void TextureManager::draw(SDL_Renderer *renderer,
+                          SDL_Texture *texture,
+                          SDL_Rect srcR,
+                          SDL_Rect dstR,
+                          SDL_RendererFlip flip)
 {
-    SDL_RenderCopy(renderer, texture, &srcR, &dstR);
-    // clearTexture(texture);
+    SDL_RenderCopyEx(renderer, texture, &srcR, &dstR, 0, NULL, flip);
 }
 
 void TextureManager::clearTexture(SDL_Texture *texture)

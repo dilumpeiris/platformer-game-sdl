@@ -12,11 +12,11 @@ class SpriteSystem : public System
             if (e->hasComponent<SpriteComponent>()) {
                 SpriteComponent *s = e->getComponent<SpriteComponent>();
                 TransformComponent *t = e->getComponent<TransformComponent>();
+
                 s->dst.x = t->position.x;
                 s->dst.y = t->position.y;
 
                 s->update();
-                // std::cout << s->file << std::endl;
             }
         }
     }

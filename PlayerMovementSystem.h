@@ -34,6 +34,7 @@ public:
             if (e->tag == 0) {
                 PhysicsComponent *p = e->getComponent<PhysicsComponent>();
                 AnimationComponent *a = e->getComponent<AnimationComponent>();
+
                 handleMovement(p->velocity, isJumping, isGrounded, state, a);
                 handleJumping(p->velocity, isJumping, isGrounded);
             }
@@ -62,23 +63,20 @@ public:
 
         if (new_state[SDL_SCANCODE_A]) {
             velocity.x = -1 * speed;
-            a->current_animation = "walking-left";
-            // a->state = 1;
-            // transform->resolveCollisionX();
+            a->playAnimation("walking-left");
         }
         if (state[SDL_SCANCODE_A] and !new_state[SDL_SCANCODE_A]) {
             velocity.x = 0;
-            a->current_animation = "idle-left";
+            a->playAnimation("idle-left");
         }
 
         if (new_state[SDL_SCANCODE_D]) {
-            // a->state = 0;
-            a->current_animation = "walking-right";
+            a->playAnimation("walking-right");
             velocity.x = 1 * speed;
         }
         if (state[SDL_SCANCODE_D] and !new_state[SDL_SCANCODE_D]) {
             velocity.x = 0;
-            a->current_animation = "idle-left";
+            a->playAnimation("idle-right");
         }
 
         if (new_state[SDL_SCANCODE_SPACE] && isGrounded) {
