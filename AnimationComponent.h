@@ -8,13 +8,13 @@ struct Animation
     double frame_speed;
     bool flipped = false;
 
-    std::vector<SDL_Rect> sources;
+    std::vector<SDL_Rect> source_rects;
 
     Animation()
         : frame_speed(0){};
 
     Animation(std::vector<SDL_Rect> sources, int frame_speed, bool flipped = false)
-        : sources(sources)
+        : source_rects(sources)
         , frame_speed(frame_speed)
         , flipped(flipped)
     {}
@@ -24,7 +24,6 @@ class AnimationComponent : public Component
 {
 public:
     std::map<std::string, Animation> animations;
-
     std::string current_animation;
     int current_frame = 0;
 
@@ -47,8 +46,7 @@ public:
             lastFrameTime = 0;
         }
     }
-    // Change the sources to frames later..
-    SDL_Rect getCurrentFrame() { return animations[current_animation].sources[current_frame]; }
+    SDL_Rect getCurrentFrame() { return animations[current_animation].source_rects[current_frame]; }
 
     void update() override
     {
@@ -57,7 +55,7 @@ public:
             Uint32 current_time = SDL_GetTicks();
             Animation &anim = animations[current_animation];
             if (current_time - lastFrameTime >= anim.frame_speed) {
-                current_frame = (current_frame + 1) % anim.sources.size();
+                current_frame = (current_frame + 1) % anim.source_rects.size();
                 lastFrameTime = current_time;
             }
         }

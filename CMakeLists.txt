@@ -25,6 +25,8 @@ add_executable(platformer-game-sdl
     Gravity.h
     AnimationComponent.h
     AnimationSystem.h
+    Princess.h
+    AnimationManager.h
 )
 
 include(GNUInstallDirs)

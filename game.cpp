@@ -1,12 +1,12 @@
 #include "game.h"
-// #include "AnimationComponent.h"
-// #include "AnimationSystem.h"
+#include "AnimationComponent.h"
 #include "AnimationSystem.h"
 #include "ColliderComponent.h"
 #include "CollisionDetectionSystem.h"
 #include "Gravity.h"
 #include "PhysicsSystem.h"
 #include "PlayerMovementSystem.h"
+#include "Princess.h"
 #include "SpriteComponent.h"
 #include "SpriteSystem.h"
 
@@ -22,9 +22,7 @@ void Game::loadEntities(Manager *manager)
     sky->addComponent<SpriteComponent>(renderer, sprite_sheet, 64, 0, 800, 640);
 
     Entity *box = manager->addEntity(1);
-    box->addComponent<TransformComponent>(300, 375, 100, 100);
-    // SDL_Rect src = {64, 0, 100, 100};
-    // SDL_Rect dst = {100, 100, 100, 100};
+    box->addComponent<TransformComponent>(100, 100, 100, 100);
     box->addComponent<SpriteComponent>(renderer, sprite_sheet, 992, 0, 100, 100);
     box->addComponent<ColliderComponent>();
 
@@ -38,53 +36,14 @@ void Game::loadEntities(Manager *manager)
     box3->addComponent<SpriteComponent>(renderer, sprite_sheet, 992, 0, 100, 100);
     box3->addComponent<ColliderComponent>();
 
-    Entity *player = manager->addEntity(0);
-    player->addComponent<TransformComponent>(100, 100, 64, 64);
-    player->addComponent<PhysicsComponent>();
-    player->addComponent<ColliderComponent>();
-    player->addComponent<SpriteComponent>(renderer, sprite_sheet, 864, 0, 64, 64);
+    Princess *princess = new Princess(renderer, sprite_sheet);
+    manager->addEntity(princess);
 
     for (int i = 0; i < 10; i++) {
         Entity *brick = manager->addEntity(1);
         brick->addComponent<TransformComponent>(i * 64, 640 - 64, 64, 64);
         brick->addComponent<SpriteComponent>(renderer, sprite_sheet, 0, 0, 64, 64);
         brick->addComponent<ColliderComponent>();
-    }
-}
-
-Animation Game::createAnimation(
-    std::string name, int start, int total, float speed, bool flipped, int scale)
-{
-    std::vector<SDL_Rect> frame_sources;
-    for (int i = 0; i < total; ++i) {
-        SDL_Rect src = {start + (i * scale), 0, scale, scale};
-        frame_sources.emplace_back(src);
-    }
-    Animation animation(frame_sources, speed, flipped);
-    return animation;
-}
-
-void Game::loadAnimations(Manager *manager)
-{
-    for (auto &e : manager->entities) {
-        switch (e->tag) {
-        case 0:
-            Animation walking_left = createAnimation("walking-left", 1092, 8, 50.0, true);
-            Animation walking_right = createAnimation("walking-right", 1092, 8, 50.0);
-            Animation idle_left = createAnimation("idle-left", 864, 2, 500.0, true);
-            Animation idle_right = createAnimation("idle-right", 864, 2, 500.0);
-
-            // We don't need to provide the name twice!
-            e->addComponent<AnimationComponent>();
-            e->getComponent<AnimationComponent>()->addAnimation("walking-left", walking_left);
-            e->getComponent<AnimationComponent>()->addAnimation("walking-right", walking_right);
-            e->getComponent<AnimationComponent>()->addAnimation("idle-left", idle_left);
-            e->getComponent<AnimationComponent>()->addAnimation("idle-right", idle_right);
-
-            e->getComponent<AnimationComponent>()->current_animation = "idle-right";
-
-            break;
-        }
     }
 }
 
@@ -111,10 +70,9 @@ void Game::init(const char *title, int width, int height)
 
     manager = new Manager();
 
-    SDL_RenderClear(renderer);
+    // SDL_RenderClear(renderer);
     loadSpriteSheet("spritesheet.png");
     loadEntities(manager);
-    loadAnimations(manager);
 
     manager->addSystem<PlayerMovementSystem>();
     manager->addSystem<Gravity>();

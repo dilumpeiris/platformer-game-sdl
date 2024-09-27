@@ -1,5 +1,4 @@
 #pragma once
-#include "AnimationComponent.h"
 #include "ECS.h"
 #include "SDL.h"
 class Game
@@ -22,8 +21,5 @@ public:
     void draw();
     void handleEvents();
     void loadEntities(Manager *manager);
-    void loadAnimations(Manager *manager);
     void loadSpriteSheet(std::string filename);
-    Animation createAnimation(
-        std::string name, int start, int total, float speed, bool flipped = false, int scale = 64);
 };

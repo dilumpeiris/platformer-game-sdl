@@ -3,6 +3,7 @@
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
 #include <SDL.h>
+#include <iostream>
 
 class SpriteSystem : public System
 {

@@ -153,6 +153,12 @@ public:
             e->draw();
         }
     }
+    Entity *addEntity(Entity *e)
+    {
+        std::unique_ptr<Entity> uPtr{e};
+        entities.emplace_back(std::move(uPtr));
+        return e;
+    }
     Entity *addEntity(int entTag)
     {
         Entity *e = new Entity(entTag);

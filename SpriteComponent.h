@@ -2,6 +2,8 @@
 #include "ECS.h"
 #include "texturemanager.h"
 #include <SDL.h>
+#include <iostream>
+#include <ostream>
 
 class SpriteComponent : public Component
 {
