@@ -1,13 +1,8 @@
-# platformer-game-sdl
-This is a simple 2D Platformer game made using sdl2 and c++.  
-![Demo GIF](Sample.gif)
-
-
 # Platformer Game (SDL2 + ECS)
 
 A simple 2D platformer built using [SDL2](https://www.libsdl.org/) in C++, featuring a custom Entity-Component-System (ECS), basic animation support, and two kinds of collision detection (AABB and per-tile collision). This project serves as a foundation for learning low-level game engine concepts and building modular systems in C++.
 
-![screenshot](assets/screenshot.png) <!-- Replace with actual image path if available -->
+![Demo GIF](Sample.gif)
 
 ---
 
