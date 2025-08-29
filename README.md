@@ -12,7 +12,6 @@ A simple 2D platformer built using [SDL2](https://www.libsdl.org/) in C++, featu
 - **SDL2** — for rendering, input, window management
 - **SDL_image** — for loading textures
 - **Custom ECS** — lightweight and minimal
-- **Tiled Map Editor (.tmx)** — for level design (via XML parsing)
 
 ---
 
@@ -22,13 +21,11 @@ A simple 2D platformer built using [SDL2](https://www.libsdl.org/) in C++, featu
 - 🎮 **Player movement**, jumping, and gravity physics
 - 🧱 **Collision detection**:
   - Axis-Aligned Bounding Box (AABB)
-  - Tile-based (map collision from Tiled)
+  - Ray casting based collision detection
 - 🧍 **Animation system** (frame-based, loopable)
-- 🗺️ Load tilemaps via Tiled `.tmx` files (XML parser included)
+- 🗺️ Load tilemaps via Tiled `.png` `.jpg` files.
 - 🧪 Debug-friendly architecture (logging, separation of systems)
 
 ---
-
-## 📁 Project Structure
 
 
